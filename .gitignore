@@ -1,0 +1,63 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Local environment and secrets (sanitized examples remain trackable)
+.env
+.env.*
+!.env.example
+!.env.*.example
+!.env.example.*
+.aws/
+secrets/
+secrets.*
+!secrets.example.*
+*.pem
+*.key
+
+# Terraform: provider lock files are intentionally tracked
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfplan.*
+*.plan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+*.tfvars
+*.tfvars.json
+!*.example.tfvars
+!*.example.tfvars.json
+!*.tfvars.example
+!*.tfvars.json.example
+
+# Docker / OpenSearch: use these paths for local bind-mounted data
+/platform/data/
+/platform/volumes/
+/platform/opensearch-data/
+/platform/docker-data/
+/opensearch-data/
+
+# Local logs and editor / OS files
+*.log
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

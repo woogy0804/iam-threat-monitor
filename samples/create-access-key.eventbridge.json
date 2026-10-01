@@ -1,0 +1,44 @@
+{
+  "version": "0",
+  "id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  "detail-type": "AWS API Call via CloudTrail",
+  "source": "aws.iam",
+  "account": "123456789012",
+  "time": "2026-10-01T03:00:00Z",
+  "region": "us-east-1",
+  "resources": [],
+  "detail": {
+    "eventVersion": "1.11",
+    "userIdentity": {
+      "type": "IAMUser",
+      "principalId": "AIDAEXAMPLEOPERATOR001",
+      "arn": "arn:aws:iam::123456789012:user/lab-key-operator",
+      "accountId": "123456789012",
+      "userName": "lab-key-operator"
+    },
+    "eventTime": "2026-10-01T03:00:00Z",
+    "eventSource": "iam.amazonaws.com",
+    "eventName": "CreateAccessKey",
+    "awsRegion": "us-east-1",
+    "sourceIPAddress": "192.0.2.10",
+    "userAgent": "aws-cli/2.0 example",
+    "requestParameters": {
+      "userName": "lab-target-user"
+    },
+    "responseElements": {
+      "accessKey": {
+        "userName": "lab-target-user",
+        "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "status": "Active",
+        "createDate": "Oct 1, 2026 3:00:00 AM"
+      }
+    },
+    "requestID": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+    "eventID": "11111111-1111-4111-8111-111111111111",
+    "readOnly": false,
+    "eventType": "AwsApiCall",
+    "managementEvent": true,
+    "recipientAccountId": "123456789012",
+    "eventCategory": "Management"
+  }
+}
