@@ -1,0 +1,37 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadPasswordRulesAndMfaDevices",
+      "Effect": "Allow",
+      "Action": ["iam:GetAccountPasswordPolicy", "iam:ListVirtualMFADevices"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ManageOwnPasswordAndMfaEnrollment",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetUser",
+        "iam:ChangePassword",
+        "iam:GetMFADevice",
+        "iam:ListMFADevices",
+        "iam:EnableMFADevice",
+        "iam:ResyncMFADevice"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "CreateOwnNamedVirtualMfa",
+      "Effect": "Allow",
+      "Action": "iam:CreateVirtualMFADevice",
+      "Resource": "arn:aws:iam::*:mfa/${aws:username}-*"
+    },
+    {
+      "Sid": "DeactivateOwnMfaAfterMfaLogin",
+      "Effect": "Allow",
+      "Action": "iam:DeactivateMFADevice",
+      "Resource": "arn:aws:iam::*:user/${aws:username}",
+      "Condition": {"Bool": {"aws:MultiFactorAuthPresent": "true"}}
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "InspectAndManageLabAccessKeys",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetUser",
+        "iam:ListAccessKeys",
+        "iam:ListAttachedUserPolicies",
+        "iam:CreateAccessKey",
+        "iam:UpdateAccessKey",
+        "iam:DeleteAccessKey"
+      ],
+      "Resource": "arn:aws:iam::111122223333:user/iam-threat-monitor-lab-*"
+    },
+    {
+      "Sid": "AttachAndDetachOnlyReadOnlyAccess",
+      "Effect": "Allow",
+      "Action": ["iam:AttachUserPolicy", "iam:DetachUserPolicy"],
+      "Resource": "arn:aws:iam::111122223333:user/iam-threat-monitor-lab-*",
+      "Condition": {
+        "ArnEquals": {"iam:PolicyARN": "arn:aws:iam::aws:policy/ReadOnlyAccess"}
+      }
+    },
+    {
+      "Sid": "ReadCloudTrailHistory",
+      "Effect": "Allow",
+      "Action": "cloudtrail:LookupEvents",
+      "Resource": "*",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    }
+  ]
+}

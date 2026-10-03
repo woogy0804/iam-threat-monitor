@@ -1,0 +1,21 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadOnlyProjectAlerts",
+      "Effect": "Allow",
+      "Action": ["dynamodb:DescribeTable", "dynamodb:GetItem", "dynamodb:Query", "dynamodb:Scan"],
+      "Resource": [
+        "arn:aws:dynamodb:us-east-1:111122223333:table/iam-threat-monitor-alerts",
+        "arn:aws:dynamodb:us-east-1:111122223333:table/iam-threat-monitor-alerts/index/*"
+      ]
+    },
+    {
+      "Sid": "ListTablesForConsoleNavigation",
+      "Effect": "Allow",
+      "Action": "dynamodb:ListTables",
+      "Resource": "*",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    }
+  ]
+}
