@@ -2,20 +2,188 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "ReadOnlyProjectAlerts",
+      "Sid": "ManageEc2InProjectRegion",
       "Effect": "Allow",
-      "Action": ["dynamodb:DescribeTable", "dynamodb:GetItem", "dynamodb:Query", "dynamodb:Scan"],
+      "Action": "ec2:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "ConnectWithEc2InstanceConnect",
+      "Effect": "Allow",
+      "Action": [
+        "ec2-instance-connect:SendSSHPublicKey",
+        "ec2-instance-connect:OpenTunnel"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "StartEc2ShellSessions",
+      "Effect": "Allow",
+      "Action": "ssm:StartSession",
+      "Resource": [
+        "arn:aws:ec2:us-east-1:111122223333:instance/*",
+        "arn:aws:ssm:us-east-1:111122223333:document/SSM-SessionManagerRunShell",
+        "arn:aws:ssm:us-east-1::document/SSM-SessionManagerRunShell"
+      ]
+    },
+    {
+      "Sid": "OperateShellSessions",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:ResumeSession",
+        "ssm:TerminateSession"
+      ],
+      "Resource": "arn:aws:ssm:us-east-1:111122223333:session/*"
+    },
+    {
+      "Sid": "OpenShellDataChannels",
+      "Effect": "Allow",
+      "Action": "ssmmessages:OpenDataChannel",
+      "Resource": "arn:aws:ssm:us-east-1:111122223333:session/*"
+    },
+    {
+      "Sid": "BrowseSsmForEc2",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:DescribeInstanceInformation",
+        "ssm:DescribeSessions",
+        "ssm:GetConnectionStatus"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "ReadPublicAmiParameters",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters"
+      ],
+      "Resource": "arn:aws:ssm:us-east-1:111122223333:parameter/aws/service/ami-amazon-linux-latest/*"
+    },
+    {
+      "Sid": "ManageAlertData",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem"
+      ],
       "Resource": [
         "arn:aws:dynamodb:us-east-1:111122223333:table/iam-threat-monitor-alerts",
         "arn:aws:dynamodb:us-east-1:111122223333:table/iam-threat-monitor-alerts/index/*"
       ]
     },
     {
-      "Sid": "ListTablesForConsoleNavigation",
+      "Sid": "ListDynamoDbTables",
       "Effect": "Allow",
       "Action": "dynamodb:ListTables",
       "Resource": "*",
-      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "ManagePlatformExecutionRoles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:GetRole",
+        "iam:UpdateRole",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:TagRole",
+        "iam:UntagRole",
+        "iam:AttachRolePolicy",
+        "iam:DetachRolePolicy",
+        "iam:ListAttachedRolePolicies",
+        "iam:PutRolePolicy",
+        "iam:DeleteRolePolicy",
+        "iam:GetRolePolicy",
+        "iam:ListRolePolicies"
+      ],
+      "Resource": "arn:aws:iam::111122223333:role/iam-threat-monitor-platform-*"
+    },
+    {
+      "Sid": "ManagePlatformExecutionPolicies",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreatePolicy",
+        "iam:DeletePolicy",
+        "iam:CreatePolicyVersion",
+        "iam:DeletePolicyVersion",
+        "iam:SetDefaultPolicyVersion",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
+        "iam:ListPolicyVersions",
+        "iam:TagPolicy",
+        "iam:UntagPolicy"
+      ],
+      "Resource": "arn:aws:iam::111122223333:policy/iam-threat-monitor-platform-*"
+    },
+    {
+      "Sid": "ManagePlatformInstanceProfiles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateInstanceProfile",
+        "iam:DeleteInstanceProfile",
+        "iam:GetInstanceProfile",
+        "iam:TagInstanceProfile",
+        "iam:UntagInstanceProfile",
+        "iam:AddRoleToInstanceProfile",
+        "iam:RemoveRoleFromInstanceProfile"
+      ],
+      "Resource": [
+        "arn:aws:iam::111122223333:instance-profile/iam-threat-monitor-platform-*",
+        "arn:aws:iam::111122223333:role/iam-threat-monitor-platform-*"
+      ]
+    },
+    {
+      "Sid": "PassPlatformRolesToEc2",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::111122223333:role/iam-threat-monitor-platform-*",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ec2.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "BrowseIamForPlatform",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListRoles",
+        "iam:ListPolicies",
+        "iam:ListInstanceProfiles",
+        "iam:ListInstanceProfilesForRole",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion"
+      ],
+      "Resource": "*"
     }
   ]
 }

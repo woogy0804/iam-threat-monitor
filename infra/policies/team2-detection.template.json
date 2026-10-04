@@ -2,46 +2,118 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "InspectProjectEventRules",
+      "Sid": "ManageProjectEventRules",
       "Effect": "Allow",
-      "Action": ["events:DescribeRule", "events:ListTargetsByRule"],
+      "Action": "events:*",
       "Resource": "arn:aws:events:us-east-1:111122223333:rule/iam-threat-monitor-*"
     },
     {
-      "Sid": "TestAndUpdateProjectLambdaCode",
+      "Sid": "ManageProjectLambda",
       "Effect": "Allow",
-      "Action": [
-        "lambda:GetFunction",
-        "lambda:GetFunctionConfiguration",
-        "lambda:GetPolicy",
-        "lambda:InvokeFunction",
-        "lambda:UpdateFunctionCode"
-      ],
+      "Action": "lambda:*",
       "Resource": "arn:aws:lambda:us-east-1:111122223333:function:iam-threat-monitor-*"
     },
     {
-      "Sid": "ReadProjectLambdaLogs",
+      "Sid": "ManageProjectLambdaLogs",
       "Effect": "Allow",
-      "Action": ["logs:DescribeLogStreams", "logs:GetLogEvents", "logs:FilterLogEvents"],
-      "Resource": "arn:aws:logs:us-east-1:111122223333:log-group:/aws/lambda/iam-threat-monitor-*:*"
-    },
-    {
-      "Sid": "InspectProjectStateAndAlerts",
-      "Effect": "Allow",
-      "Action": ["dynamodb:DescribeTable", "dynamodb:GetItem", "dynamodb:Query", "dynamodb:Scan"],
+      "Action": "logs:*",
       "Resource": [
-        "arn:aws:dynamodb:us-east-1:111122223333:table/iam-threat-monitor-state",
-        "arn:aws:dynamodb:us-east-1:111122223333:table/iam-threat-monitor-state/index/*",
-        "arn:aws:dynamodb:us-east-1:111122223333:table/iam-threat-monitor-alerts",
-        "arn:aws:dynamodb:us-east-1:111122223333:table/iam-threat-monitor-alerts/index/*"
+        "arn:aws:logs:us-east-1:111122223333:log-group:/aws/lambda/iam-threat-monitor-*",
+        "arn:aws:logs:us-east-1:111122223333:log-group:/aws/lambda/iam-threat-monitor-*:*"
       ]
     },
     {
-      "Sid": "ListServicesForConsoleNavigation",
+      "Sid": "ManageProjectDynamoDb",
       "Effect": "Allow",
-      "Action": ["events:ListEventBuses", "events:ListRules", "lambda:ListFunctions", "logs:DescribeLogGroups", "dynamodb:ListTables"],
+      "Action": "dynamodb:*",
+      "Resource": [
+        "arn:aws:dynamodb:us-east-1:111122223333:table/iam-threat-monitor-*",
+        "arn:aws:dynamodb:us-east-1:111122223333:table/iam-threat-monitor-*/*"
+      ]
+    },
+    {
+      "Sid": "ManageDetectionExecutionRoles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:GetRole",
+        "iam:UpdateRole",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:TagRole",
+        "iam:UntagRole",
+        "iam:AttachRolePolicy",
+        "iam:DetachRolePolicy",
+        "iam:ListAttachedRolePolicies",
+        "iam:PutRolePolicy",
+        "iam:DeleteRolePolicy",
+        "iam:GetRolePolicy",
+        "iam:ListRolePolicies"
+      ],
+      "Resource": "arn:aws:iam::111122223333:role/iam-threat-monitor-detection-*"
+    },
+    {
+      "Sid": "ManageDetectionExecutionPolicies",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreatePolicy",
+        "iam:DeletePolicy",
+        "iam:CreatePolicyVersion",
+        "iam:DeletePolicyVersion",
+        "iam:SetDefaultPolicyVersion",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
+        "iam:ListPolicyVersions",
+        "iam:TagPolicy",
+        "iam:UntagPolicy"
+      ],
+      "Resource": "arn:aws:iam::111122223333:policy/iam-threat-monitor-detection-*"
+    },
+    {
+      "Sid": "PassDetectionRolesToLambda",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::111122223333:role/iam-threat-monitor-detection-*",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "lambda.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "BrowseServicesForDetection",
+      "Effect": "Allow",
+      "Action": [
+        "events:List*",
+        "events:DescribeEventBus",
+        "events:TestEventPattern",
+        "lambda:ListFunctions",
+        "lambda:GetAccountSettings",
+        "logs:DescribeLogGroups",
+        "dynamodb:ListTables",
+        "ec2:DescribeVpcs",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "cloudwatch:ListMetrics",
+        "cloudwatch:GetMetricData"
+      ],
       "Resource": "*",
-      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "BrowseIamForDetection",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListRoles",
+        "iam:ListPolicies",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion"
+      ],
+      "Resource": "*"
     }
   ]
 }

@@ -2,33 +2,35 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "InspectAndManageLabAccessKeys",
+      "Sid": "ManageLabUsersAndPolicies",
       "Effect": "Allow",
-      "Action": [
-        "iam:GetUser",
-        "iam:ListAccessKeys",
-        "iam:ListAttachedUserPolicies",
-        "iam:CreateAccessKey",
-        "iam:UpdateAccessKey",
-        "iam:DeleteAccessKey"
-      ],
-      "Resource": "arn:aws:iam::111122223333:user/iam-threat-monitor-lab-*"
+      "Action": "iam:*",
+      "Resource": [
+        "arn:aws:iam::111122223333:user/iam-threat-monitor-lab-*",
+        "arn:aws:iam::111122223333:policy/iam-threat-monitor-lab-*"
+      ]
     },
     {
-      "Sid": "AttachAndDetachOnlyReadOnlyAccess",
+      "Sid": "BrowseIamForScenarioWork",
       "Effect": "Allow",
-      "Action": ["iam:AttachUserPolicy", "iam:DetachUserPolicy"],
-      "Resource": "arn:aws:iam::111122223333:user/iam-threat-monitor-lab-*",
-      "Condition": {
-        "ArnEquals": {"iam:PolicyARN": "arn:aws:iam::aws:policy/ReadOnlyAccess"}
-      }
+      "Action": [
+        "iam:ListUsers",
+        "iam:ListPolicies",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion"
+      ],
+      "Resource": "*"
     },
     {
       "Sid": "ReadCloudTrailHistory",
       "Effect": "Allow",
       "Action": "cloudtrail:LookupEvents",
       "Resource": "*",
-      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
     }
   ]
 }
